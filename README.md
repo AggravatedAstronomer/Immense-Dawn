@@ -18,8 +18,8 @@ is made. Each time the index page is loaded, the server iterates through the car
 The Overseer database object is updated to reflect the new data regarding successful and failed predictions, and return a success rate displayed in the Index. It is harder to successfully predict higher level games, as the games tend to be closer, and the players tend to be less prone to psychological influences (tilt, rage, etc).
 
 # Installation
-* git clone git@github.com:AggravatedAstronomer/PsychologicalWarfare.git
-* cd PsychologicalWarfare
+* git clone git@github.com:AggravatedAstronomer/Immense-Dawn.git
+* cd Immense-Dawn
 * virtualenv .
 * . bin/activate
 * pip install -r requirements.txt
