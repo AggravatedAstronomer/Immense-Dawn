@@ -1,0 +1,135 @@
+{% extends "StatTracker/base.html" %}
+{% load staticfiles %}
+<body>
+{% block content %}
+<canvas id="canvas"></canvas>
+<br>
+<h1 id="main-header">Welcome to the Index</h1>
+<h3 id="index-sub-heading">Select Analysis Profiles and Index Summoners</h3>
+<br>
+<div class="contained-data-section" style="float: right">
+<h3 id="effectiveness-rating">Operating at <b>{{ overseer.total_success_rating }}%</b> effectiveness over <b>{{ overseer.total_checked_predictions }}</b> sampled games</h3>
+<p> Master & Challenger Tiers: Operating at <b>{{ overseer.chal_mast_success_rating }}%</b> effectiveness over <b>{{ chal_mast_checked_predictions }}</b> sampled games</p>
+<p> Diamond Tier: Operating at <b>{{ overseer.diamond_success_rating }}%</b> effectiveness over <b>{{ overseer.diamond_checked_predictions }}</b> sampled games </p>
+<p> Platinum Tier: Operating at <b>{{ overseer.platinum_success_rating }}%</b> effectiveness over <b>{{ overseer.platinum_checked_predictions }}</b> sampled games </p>
+<p> Gold Tier: Operating at <b>{{ overseer.gold_success_rating }}%</b> effectiveness over <b>{{ overseer.gold_checked_predictions }}</b> sampled games </p>
+<p> Silver Tier: Operating at <b>{{ overseer.silver_success_rating }}%</b> effectiveness over <b>{{ overseer.silver_checked_predictions }}</b> sampled games </p>
+<p> Bronze Tier: Operating at <b>{{ overseer.bronze_success_rating }}%</b> effectiveness over <b>{{ overseer.bronze_checked_predictions }}</b> sampled games </p>
+<h5 id="pending-games">Diagnostic Overseer: There are <b>{{ overseer.pending_games }}</b> ranked 5v5 game(s) pending outcome verification</h5>
+</div>
+
+<form method="get" action="{% url 'StatTracker:search_summoner' %}">
+{% if error_state.summoner_not_exist %}
+<div class="error non-highlighting">
+<p id="error-no-summoner" class="glyphicon glyphicon-warning-sign"> Summoner {{ error_state.summoner_name }} does not exist</p>
+</div>
+{% endif %}
+<br>
+
+{% if threat_quotient_parameter_list %}
+    <div class="contained-profile" id='threat-profile'>
+    <div>
+    <h4 id="threat-header" class="glyphicon glyphicon-screenshot"> Threat Parameter Profile: </h4>
+    </div>
+    <div style="display: inline-block; float: right;">
+    <div class="select-container">
+        <select class="form-control" name="threat_quotient">
+            {% for threat_quotient_parameter in threat_quotient_parameter_list %}
+                <option value="{{ threat_quotient_parameter.id }}">{{ threat_quotient_parameter.preset_name }}</option>
+            {% endfor %}
+     </select>
+     </div>
+     </div>
+     </div>
+{% else %}
+<div class="contained-profile" id='threat-profile'>
+<h4 id="profile-error-1" class="glyphicon glyphicon-warning-sign"> No Threat Parameters Defined</h4>
+</div>
+{% endif %}
+{% if psych_war_module_list %}
+    <br>
+    <div class="contained-profile" id='psych-profile'>
+    <div>
+    <h4 id="psych-header" class="glyphicon glyphicon-eye-open"> Psychological Warfare Module: </h4>
+    </div>
+    <div style="display: inline-block; float: right;">
+    <div class="select-container">
+        <select class="form-control" name="psych_war">
+            {% for psych_war_profile in psych_war_module_list %}
+                <option value="{{ psych_war_profile.id }}">{{ psych_war_profile.preset_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    </div>
+    </div>
+{% else %}
+<br>
+<div class="contained-profile" id='psych-profile'>
+<h4 id="profile-error-2" class="glyphicon glyphicon-warning-sign"> No Psychological Warfare Module Present</h4>
+</div>
+{% endif %}
+
+<div class="contained-profile" id='summoner-input'>
+    <div>
+    <h4 id="summoner-input-header" class="glyphicon glyphicon-user"> Add Summoner to Index</h4>
+    </div>
+    <div style="display: inline-block; float: right;">
+    <input type="text" placeholder="Enter Summoner Name" name="name" maxlength="25" />
+    <button id="submit-summoner" type="submit" value="summoner_name">Search</button>
+    </div>
+</div>
+</form>
+
+<br>
+<br>
+<br>
+<br>
+<form method="GET" action="{% url 'StatTracker:detail' %}">
+<h2 id="recent-summoners-list-header" class="glyphicon glyphicon-chevron-right">&nbsp;Recently Indexed Summoners </h2>
+{% if summoner_list %}
+    <br>
+    <div class="summoner-recent-accordion">
+    {% for summoner in recent_summoner_list %}
+            <h3>{{ summoner.name }} - {% if summoner.total_games %}Played {{ summoner.total_games }} Ranked Games, Won {{ summoner.career_win_rate }}%{% else %}Data Not Harvested{% endif %}{% if summoner.game %} - <b>In a ranked game</b>{% endif %}</h3>
+            <div class="contained-entry">
+            <button class="btn-info" type="submit" value="{{ summoner.id }}" name="summoner_id"> Harvest Data </button>
+            <br>
+            <br>
+            <p class="summoner-accordion-info non-highlighting">Summoner ID:</p>{% if summoner.riot_id %}<p class="entry-data">{{ summoner.riot_id }}</p> {% else %} <p class="entry-data">Data Not Harvested</p> {% endif %}
+            <br>
+            <p class="summoner-accordion-info non-highlighting">Time Added To Database:</p><p class="entry-data">{{ summoner.date_added }}</p>
+            <br>
+            <p class="summoner-accordion-info non-highlighting">Last Time Updated:</p><p class="entry-data">{{ summoner.last_check_date }}</p>
+            </div>
+    {% endfor %}
+    </div>
+    <br>
+    <h2 id="ranked-game-summoners-list-header" class="glyphicon glyphicon-chevron-right">&nbsp;Summoners in Unique Ranked Games </h2>
+    <div class="summoner-ranked-accordion">
+    {% for summoner in in_ranked_game_list %}
+            <h3>{{ summoner.name }} - {% if summoner.total_games %}Played {{ summoner.total_games }} Ranked Games, Won {{ summoner.career_win_rate }}%{% else %}Data Not Harvested{% endif %}{% if summoner.game %} - <b>In a ranked game</b>{% endif %}</h3>
+            <div class="contained-entry">
+            <button class="btn-info" type="submit" value="{{ summoner.id }}" name="summoner_id"> Harvest Data </button>
+            <br>
+            <br>
+            <p class="summoner-accordion-info non-highlighting">Summoner ID:</p>{% if summoner.riot_id %}<p class="entry-data">{{ summoner.riot_id }}</p> {% else %} <p class="entry-data">Data Not Harvested</p> {% endif %}
+            <br>
+            <p class="summoner-accordion-info non-highlighting">Time Added To Database:</p><p class="entry-data">{{ summoner.date_added }}</p>
+            <br>
+            <p class="summoner-accordion-info non-highlighting">Last Time Updated:</p><p class="entry-data">{{ summoner.last_check_date }}</p>
+            </div>
+    {% endfor %}
+    </div>
+{% else %}
+<br>
+<br>
+
+<br><h4 id="profile-error-3" class="glyphicon glyphicon-warning-sign"> No Summoners in Database</h4>
+
+{% endif %}
+</form>
+<br>
+<br>
+<br>
+{% endblock %}
+</body>

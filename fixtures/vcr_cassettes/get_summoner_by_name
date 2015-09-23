@@ -1,0 +1,30 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept: ['*/*']
+      Accept-Encoding: ['gzip, deflate']
+      Connection: [keep-alive]
+      User-Agent: [python-requests/2.7.0 CPython/3.4.0 Linux/3.13.0-61-generic]
+    method: GET
+    uri: https://euw.api.pvp.net/api/lol/euw/v1.4/summoner/by-name/Aggrastronomer?api_key=3aa7d704-2498-4b73-8c1c-5582c0b5734d
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAAFXMMQ6DMBAF0bv82oWDI2O7Q0qDlEtYyYIs4d1oDTSIu4eU6d/MgTzPmtuqwlJJ
+        kQ6UN1LXhej76Aw4V0LC8M8MPipTWWh8CY+/4KJtq1WY9Ek7LUjOGijtpRXhR16vy+3uovWh98Fa
+        e55fjPhMsX0AAAA=
+    headers:
+      Access-Control-Allow-Headers: [Content-Type]
+      Access-Control-Allow-Methods: ['GET, POST, DELETE, PUT']
+      Access-Control-Allow-Origin: ['*']
+      Connection: [keep-alive]
+      Content-Encoding: [gzip]
+      Content-Length: ['125']
+      Content-Type: [application/json; charset=UTF-8]
+      Date: ['Fri, 21 Aug 2015 13:35:01 GMT']
+      Server: [Jetty(9.1.5.v20140505)]
+      Vary: ['Accept-Encoding, User-Agent']
+      X-NewRelic-App-Data: [PxQFWFFSDwQTVVdUBAgPUkYdFGQHBDcQUQxLA1tMXV1dORYzVBBGBxdCdhUSEVFRRRAEPhhQRw84HlpcDjpMB0UVZE1OCRoGb0oTPR4DSk8KV1oEOkwSERxUT1IbARlWVAABAFdVWlccTwlOGgFVUAMDC1NSBFJWB1UDUlFBZQ==]
+    status: {code: 200, message: OK}
+version: 1
