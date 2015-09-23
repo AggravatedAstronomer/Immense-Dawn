@@ -385,7 +385,11 @@ class SubjectSummoner(object):
         if self.champ_master_list is not None:
             self.champ_master_list = self.champ_master_list['data']
         # Retrieve current game version number
-        self.game_version = self.api.get_game_version()[0]
+        self.game_version = self.api.get_game_version()
+        if self.game_version is not None:
+            self.game_version = self.game_version[0]
+        else:
+            self.game_version = "5.18.1"
         print("Current Game Version for EUW: " + self.game_version)
         # Hence create an image handler object for existing champions
         self.image_handler = ChampionImagesFactory(
