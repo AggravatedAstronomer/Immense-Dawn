@@ -10,9 +10,11 @@ from .models import SelfDiagnosticModule
 
 # These functions are used by the SubjectSummoner and Participant objects
 class SharedPsychFunctions(object):
-    def __init__(self, history, psych_war_mod):
+    def __init__(self, history, psych_war_mod, riot_id):
+        self.api = settings.RIOT_API_KEY
         self.history = history
         self.psych_war_mod = psych_war_mod
+        self.riot_id = riot_id
         self.games_to_fetch = self.psych_war_mod.games_to_fetch
         self.match_history = []
         self.recent_wins = 0
@@ -39,26 +41,36 @@ class SharedPsychFunctions(object):
             return pattern
 
     def psych_core(self):
-        for key in self.history:
-            if len(self.history[key]) < self.psych_war_mod.games_to_fetch:
-                self.games_to_fetch = len(self.history[key])
-                self.match_history_debug_message = (
-                    "Limited history data. \
-                            Number of requested games \
-                            curtailed to " + str(self.games_to_fetch) + "."
-                )
+        if len(self.history['matches']) < self.psych_war_mod.games_to_fetch:
+            self.games_to_fetch = len(self.history['matches'])
+            self.match_history_debug_message = (
+                "Limited history data. \
+                        Number of requested games \
+                        curtailed to " + str(self.games_to_fetch) + "."
+            )
 
         for i in range(0, self.games_to_fetch):
-            for key in self.history:
-                root = self.history[key][i]
-                if root['queueType'] == 'RANKED_SOLO_5x5':
-                    for entry in (root['participants']):
-                        if root['participants'][0]['stats']['winner'] is True:
-                            self.match_history.append("Win")
-                            self.recent_wins += 1
-                        else:
-                            self.match_history.append("Loss")
-                            self.recent_losses += 1
+            root = self.history['matches'][i]
+            if root['queue'] == 'RANKED_SOLO_5x5':
+                match_id = root['matchId']
+                match = RiotAPI(self.api).get_match_by_id(match_id)
+                time.sleep(1)
+                if len(match['participantIdentities']) != 10:
+                    print('DEBUG')
+                    print(root['queue'])
+                    print(len(match['participantIdentities']))
+                for participant in match['participantIdentities']:
+                    print("Participant" + "\n")
+                    print(participant)
+                    if participant['player']['summonerId'] == self.riot_id:
+                        self.participant_id = participant['participantId'] - 1
+                if match['participants'][self.participant_id]['stats']['winner'] is True:
+                    self.match_history.append("Win")
+                    self.recent_wins += 1
+                else:
+                    self.match_history.append("Loss")
+                    self.recent_losses += 1
+                        
         self.match_history = list(reversed(self.match_history))
         self.recent_win_rate = \
             round((self.recent_wins / self.games_to_fetch) * 100, 2)
@@ -487,7 +499,8 @@ class SubjectSummoner(object):
         if self.history_data is not None:
             psych_evaluation = SharedPsychFunctions(
                 self.history_data,
-                self.psych_war_mod
+                self.psych_war_mod,
+                self.riot_id
             )
             self.match_history = psych_evaluation.match_history
             self.consecutive_result = psych_evaluation.consecutive_result
@@ -934,7 +947,8 @@ class Participant(object):
         if self.history is not None:
             psych_evaluation = SharedPsychFunctions(
                 self.history,
-                self.psych_war_mod
+                self.psych_war_mod,
+                self.riot_id
             )
             self.pattern = psych_evaluation.pattern
             self.severity = psych_evaluation.severity

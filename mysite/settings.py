@@ -114,7 +114,7 @@ RIOT_URL = {
     'summoner_by_name': 'v{version}/summoner/by-name/{names}',
     'stats_by_id': 'v{version}/stats/by-summoner/{summoner_id}/ranked?season=SEASON{year}',
     'league_by_id': 'v{version}/league/by-summoner/{summoner_id}/entry',
-    'match_history_by_id': 'v{version}/matchhistory/{summoner_id}?rankedQueues=RANKED_SOLO_5x5&beginIndex={begin}&endIndex={end}',
+    'match_history_by_id': 'v{version}/matchlist/by-summoner/{summoner_id}?rankedQueues=RANKED_SOLO_5x5&beginIndex={begin}&endIndex={end}',
     'match_by_id': 'v{version}/match/{match_id}',
     # URLs that don't conform to the base
     'current_game_by_id': 'https://{region}.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/{platformId}/{summoner_id}',

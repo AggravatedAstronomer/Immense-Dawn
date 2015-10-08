@@ -63,5 +63,5 @@ pip-selfcheck.json
 share/
 
 mysite/local_settings.py
-
+*.wpu
 
