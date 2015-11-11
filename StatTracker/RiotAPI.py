@@ -55,21 +55,22 @@ class SharedPsychFunctions(object):
                 match_id = root['matchId']
                 match = RiotAPI(self.api).get_match_by_id(match_id)
                 time.sleep(1)
-                if len(match['participantIdentities']) != 10:
-                    print('DEBUG')
-                    print(root['queue'])
-                    print(len(match['participantIdentities']))
-                for participant in match['participantIdentities']:
-                    print("Participant" + "\n")
-                    print(participant)
-                    if participant['player']['summonerId'] == self.riot_id:
-                        self.participant_id = participant['participantId'] - 1
-                if match['participants'][self.participant_id]['stats']['winner'] is True:
-                    self.match_history.append("Win")
-                    self.recent_wins += 1
-                else:
-                    self.match_history.append("Loss")
-                    self.recent_losses += 1
+                if match:
+                    if len(match['participantIdentities']) != 10:
+                        print('DEBUG')
+                        print(root['queue'])
+                        print(len(match['participantIdentities']))
+                    for participant in match['participantIdentities']:
+                        print("Participant" + "\n")
+                        print(participant)
+                        if participant['player']['summonerId'] == self.riot_id:
+                            self.participant_id = participant['participantId'] - 1
+                    if match['participants'][self.participant_id]['stats']['winner'] is True:
+                        self.match_history.append("Win")
+                        self.recent_wins += 1
+                    else:
+                        self.match_history.append("Loss")
+                        self.recent_losses += 1
                         
         self.match_history = list(reversed(self.match_history))
         self.recent_win_rate = \

@@ -14,6 +14,8 @@ from .models import (
 from .RiotAPI import (
     RiotAPI, SubjectSummoner, IndexListScanner, ErrorHandler
 )
+
+from mysite.tasks import alex_test_string
 import random
 
 def index(request):
@@ -28,6 +30,7 @@ def index(request):
     psych_config = request.GET.get('psych_war')
     summoner_core_info = api.get_summoner_by_name(summoner_name)
     error = request.GET.get('error')
+    alex_test_string.delay("Poop")
     if not error:
         error = ErrorHandler(summoner_name)
 
