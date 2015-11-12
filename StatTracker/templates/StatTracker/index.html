@@ -104,22 +104,6 @@
     {% endfor %}
     </div>
     <br>
-    <h2 id="ranked-game-summoners-list-header" class="glyphicon glyphicon-chevron-right">&nbsp;Summoners in Unique Ranked Games </h2>
-    <div class="summoner-ranked-accordion">
-    {% for summoner in in_ranked_game_list %}
-            <h3>{{ summoner.name }} - {% if summoner.total_games %}Played {{ summoner.total_games }} Ranked Games, Won {{ summoner.career_win_rate }}%{% else %}Data Not Harvested{% endif %}{% if summoner.game %} - <b>In a ranked game</b>{% endif %}</h3>
-            <div class="contained-entry">
-            <button class="btn-info" type="submit" value="{{ summoner.id }}" name="summoner_id"> Harvest Data </button>
-            <br>
-            <br>
-            <p class="summoner-accordion-info non-highlighting">Summoner ID:</p>{% if summoner.riot_id %}<p class="entry-data">{{ summoner.riot_id }}</p> {% else %} <p class="entry-data">Data Not Harvested</p> {% endif %}
-            <br>
-            <p class="summoner-accordion-info non-highlighting">Time Added To Database:</p><p class="entry-data">{{ summoner.date_added }}</p>
-            <br>
-            <p class="summoner-accordion-info non-highlighting">Last Time Updated:</p><p class="entry-data">{{ summoner.last_check_date }}</p>
-            </div>
-    {% endfor %}
-    </div>
 {% else %}
 <br>
 <br>

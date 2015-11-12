@@ -1,9 +1,11 @@
 $(document).ready(function() {
 
     $('.contained-data-section').hide();
+    $('.btn-info').hide();
     $('.summoner-recent-accordion, .summoner-ranked-accordion').hide();
     $('#profile-error-3').hide();
     $('.contained-data-section').delay(500).fadeIn(500);
+    $('.btn-info').delay(500).fadeIn(500);
     $('.contained-profile, .error, p, td, h1, h2, h3, #index-sub-heading, h4, h5').not('#threat-header').not('#psych-header').not('#summoner-input-header').animate({
         opacity:0
     },0);

@@ -114,7 +114,7 @@ def index(request):
                 if index_scanner.game_id not in ranked_games_already_found:
                     in_ranked_game_list.append(summoner)
                     ranked_games_already_found.append(index_scanner.game_id)
-    find_games(0)
+    #find_games(0)
 
     in_ranked_game_list = in_ranked_game_list[:10]
     recent_summoner_list = summoner_list[:10]
