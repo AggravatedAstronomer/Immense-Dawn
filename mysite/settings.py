@@ -40,11 +40,15 @@ INSTALLED_APPS = (
     'djcelery',
 )
 
-#BROKER_URL = 'redis://localhost:6379/0'
-BROKER_URL=os.environ['REDIS_URL']
 
-#CELERY_RESULT_BACKEND = BROKER_URL
-CELERY_RESULT_BACKEND=os.environ['REDIS_URL']
+try:
+    BROKER_URL=os.environ['REDIS_URL']
+except:
+    BROKER_URL = 'redis://localhost:6379/0'
+try:
+    CELERY_RESULT_BACKEND=os.environ['REDIS_URL']
+except:
+    CELERY_RESULT_BACKEND = BROKER_URL
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
