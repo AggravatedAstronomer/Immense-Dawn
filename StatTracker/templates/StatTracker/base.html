@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="{% static 'StatTracker/css/style.css' %}">
         <script type='text/javascript' src="{% static 'StatTracker/jQuery/script.js' %}"></script>
         <script type='text/javascript' src="{% static 'StatTracker/js/particle_script.js' %}"></script>
+        {% block head %}{% endblock %}
     </head>
     {% block content %}{% endblock %}
 </html>

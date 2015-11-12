@@ -15,7 +15,6 @@ from .RiotAPI import (
     RiotAPI, SubjectSummoner, IndexListScanner, ErrorHandler
 )
 
-from mysite.tasks import alex_test_string
 import random
 
 def index(request):
@@ -30,7 +29,6 @@ def index(request):
     psych_config = request.GET.get('psych_war')
     summoner_core_info = api.get_summoner_by_name(summoner_name)
     error = request.GET.get('error')
-    alex_test_string.delay("Poop")
     if not error:
         error = ErrorHandler(summoner_name)
 
@@ -155,16 +153,45 @@ def detail(request, summoner_id=None):
         ThreatParameter, pk=threat_quotient_parameter_id)
     psych_war_mod = get_object_or_404(
         PsychWarfareConfig, pk=psych_war_module_id)
-    diagnostic_name_str = "Diagnostic Module - Caretaker for game {game_id}"
+    #diagnostic_name_str = "Diagnostic Module - Caretaker for game {game_id}"
 
-    subject = SubjectSummoner(
-        summoner.name,
-        summoner.riot_id,
-        summoner.level,
-        psych_war_mod,
-        threat_config
-    )
+    from .tasks import celery_master_gather
+    subject = celery_master_gather.delay(summoner, summoner.id, psych_war_mod, threat_config)
 
+    #redirect_to=FIXME iscomplete - pass subject.id!!
+    is_complete_view_url = "/is_complete/{}/".format(subject.id)
+    return HttpResponseRedirect(is_complete_view_url)
+
+
+def is_complete(request, task_id):
+    from mysite.celery import app
+    if app.AsyncResult(task_id).ready():
+        #redirect_to=FIXME harvest
+        harvested_view_url = "/harvested/{}/".format(task_id)
+        return HttpResponseRedirect(harvested_view_url)
+    
+    # Otherwise need to render a HTML view that retries in 10 - 30s
+    context = RequestContext(request, {
+        "task_id": task_id,
+    })    
+    return render(request, 'StatTracker/detail.html', context)
+
+def harvested(request, task_id):
+    print("Hit harvested")
+    from mysite.celery import app
+    subject = app.AsyncResult(task_id).get()
+    
+    #if not summoner_id:
+        #summoner_id = request.GET.get('summoner_id')
+    summoner = get_object_or_404(Summoner, pk=subject.summoner_id)
+    #threat_quotient_parameter_id = request.GET.get('threat_quotient', 1)
+    #psych_war_module_id = request.GET.get('psych_war', 1)
+    threat_config = get_object_or_404(
+        ThreatParameter, pk=subject.threat_config.id)
+    psych_war_mod = get_object_or_404(
+        PsychWarfareConfig, pk=subject.psych_war_mod.id)    
+    
+    # And make this the success url for the polling JS
     riot_id = subject.riot_id
     current_game = subject.current_game
     ranked_stats = subject.ranked_data
@@ -262,7 +289,7 @@ def detail(request, summoner_id=None):
     time.sleep(10)
     return HttpResponseRedirect('/')
     """
-    return render(request, 'StatTracker/detail.html', context)
+    return render(request, 'StatTracker/harvested.html', context)
 
 def search_summoner(request, summoner_name=None):
     print("Hit the view")

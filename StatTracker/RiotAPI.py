@@ -384,10 +384,11 @@ class SubjectSummoner(object):
     """
     Describes the specific summoner (player) being indexed
     """
-    def __init__(self, summoner_name, summoner_riot_id, summoner_level,
+    def __init__(self, summoner_name, summoner_id, summoner_riot_id, summoner_level,
                  psych_war_mod, threat_config):
         self.api = RiotAPI(settings.RIOT_API_KEY)
         self.name = summoner_name.lower().replace(" ", "")
+        self.summoner_id = summoner_id
         self.psych_war_mod = psych_war_mod
         self.threat_config = threat_config
         self.display_name = summoner_name

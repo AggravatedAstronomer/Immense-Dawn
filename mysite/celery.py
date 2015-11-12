@@ -9,18 +9,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 
 from django.conf import settings  # noqa
 
-app = Celery('mysite',
-             include=['mysite.tasks'])
-
-app.conf.BROKER_URL = "amqp://nsf001:smashthestate@localhost.com:5672/myvhost"
-
-app.conf.update(
-    CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
-)
-
-app.conf.update(
-    CELERY_RESULT_BACKEND='djcelery.backends.cache:CacheBackend',
-)
+app = Celery('mysite')
 
 # Using a string here means the worker will not have to
 # pickle the object when using Windows.
