@@ -153,7 +153,6 @@ def detail(request, summoner_id=None):
         ThreatParameter, pk=threat_quotient_parameter_id)
     psych_war_mod = get_object_or_404(
         PsychWarfareConfig, pk=psych_war_module_id)
-    #diagnostic_name_str = "Diagnostic Module - Caretaker for game {game_id}"
 
     from .tasks import celery_master_gather
     subject = celery_master_gather.delay(summoner, summoner.id, psych_war_mod, threat_config)
@@ -180,7 +179,7 @@ def harvested(request, task_id):
     print("Hit harvested")
     from mysite.celery import app
     subject = app.AsyncResult(task_id).get()
-    
+    diagnostic_name_str = "Diagnostic Module - Caretaker for game {game_id}"
     #if not summoner_id:
         #summoner_id = request.GET.get('summoner_id')
     summoner = get_object_or_404(Summoner, pk=subject.summoner_id)

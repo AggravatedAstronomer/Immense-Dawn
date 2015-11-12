@@ -10,8 +10,9 @@ from .models import SelfDiagnosticModule
 
 # These functions are used by the SubjectSummoner and Participant objects
 class SharedPsychFunctions(object):
-    def __init__(self, history, psych_war_mod, riot_id):
+    def __init__(self, name, history, psych_war_mod, riot_id):
         self.api = settings.RIOT_API_KEY
+        self.name = name
         self.history = history
         self.psych_war_mod = psych_war_mod
         self.riot_id = riot_id
@@ -41,6 +42,7 @@ class SharedPsychFunctions(object):
             return pattern
 
     def psych_core(self):
+        print("PSYCHO-ANALYSING: ", self.name.upper())
         if len(self.history['matches']) < self.psych_war_mod.games_to_fetch:
             self.games_to_fetch = len(self.history['matches'])
             self.match_history_debug_message = (
@@ -500,6 +502,7 @@ class SubjectSummoner(object):
         """
         if self.history_data is not None:
             psych_evaluation = SharedPsychFunctions(
+                self.name,
                 self.history_data,
                 self.psych_war_mod,
                 self.riot_id
@@ -948,6 +951,7 @@ class Participant(object):
         """
         if self.history is not None:
             psych_evaluation = SharedPsychFunctions(
+                self.summoner_name,
                 self.history,
                 self.psych_war_mod,
                 self.riot_id
