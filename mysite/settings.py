@@ -40,14 +40,11 @@ INSTALLED_APPS = (
     'djcelery',
 )
 
-#BROKER_URL = "amqp://guest:**@127.0.0.1:5672//"
-#amqp://nsf001:smashthestate@localhost.com:5672/myvhost
+#BROKER_URL = 'redis://localhost:6379/0'
+BROKER_URL=os.environ['REDIS_URL']
 
-#CELERY_RESULT_BACKEND='db+sqlite:///results.db'
-#djcelery.backends.database:DatabaseBackend'
-
-BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = BROKER_URL
+#CELERY_RESULT_BACKEND = BROKER_URL
+CELERY_RESULT_BACKEND=os.environ['REDIS_URL']
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
