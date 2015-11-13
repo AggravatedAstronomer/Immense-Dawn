@@ -22,9 +22,13 @@ class SharedPsychFunctions(object):
         self.recent_losses = 0
         self.consecutive_wins = 0
         self.consecutive_losses = 0
+        self.consecutive_result = "Psych Core Failure"
+        self.consecutive_result_number = 0
         self.severity_coeff = 0
         self.match_history_debug_message = None
         self.advice = None
+        self.pattern = "Psych Core Failure"
+        self.severity = "Psych Core Failure"
         self.psych_core()
 
     def severity_coefficient(self, x, y, games_to_fetch):

@@ -221,7 +221,7 @@ def harvested(request, task_id):
         summoner.last_check_date = models.DateField("Date")
         return HttpResponse("Error: League stats unavailable. " +
                             "Probable causes: This summoner is level " +
-                            "30 but has not completed their ranked" +
+                            "30 but has not completed their ranked " +
                             "placement matches. The League API is " +
                             "down or not responding.")
 
