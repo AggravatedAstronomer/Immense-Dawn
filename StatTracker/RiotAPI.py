@@ -853,7 +853,7 @@ class Game(object):
 class Team(object):
     def __init__(self, number):
         self.number = number
-        self.name = "Team " + str(self.number)
+        self.name = "Team {}".format(self.number)
         self.total_win = 0
         self.total_threat = 0
         self.total_morale = 0

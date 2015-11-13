@@ -234,7 +234,7 @@ def harvested(request, task_id):
                     game_already_analysed = True
                     break
             if game_already_analysed is not True:
-                if current_game.predicted_outcome is not "Inconclusive":
+                if current_game.predicted_outcome == "Team 1" | "Team 2":
                     self_diagnostic = SelfDiagnosticModule(
                         name=diagnostic_name_str.format(
                             game_id=current_game.game_id
