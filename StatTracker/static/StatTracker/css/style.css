@@ -6,7 +6,26 @@ body {
     background: -moz-linear-gradient(right, black, #99FFFF); /* For Firefox 3.6 to 15 */
     background: linear-gradient(to right, black, #99FFFF); /* Standard syntax (must be last) */
     background-color: rgb(150,200,200);
-    margin-left: 50px;
+    margin-left: 20px;
+}
+
+.footer-div-fixed {
+    background-color: black;
+    position: fixed;
+    margin-right: 20px;
+    height: 45px;
+    bottom: 0px;
+    border: 2px solid #344F78;
+    width: 100%;
+}
+
+.footer-div-absolute {
+    background-color: black;
+    position: absolute;
+    margin-right: 20px;
+    height: 45px;
+    border: 2px solid #344F78;
+    width: 100%;
 }
 
 #summoner-input {
