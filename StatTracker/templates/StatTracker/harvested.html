@@ -52,7 +52,7 @@
 </div>
 <br>
 <div class="contained-data-section">
-<h3>Threat Level Projection</h3>
+<h3>League Statistics</h3>
 <p>Queue Type: {{ subject.queue_type }}</p>
 <p>League and Division: {{ subject.league_and_division }}</p>
 <p>Ladder Points: {{ subject.ladder_points }}
@@ -61,7 +61,7 @@
 <p>Wins in this League: {{ subject.league_wins }}</p>
 <p>Losses in this League: {{ subject.league_losses }}</p>
 <p>Win Ratio in this League: {{ subject.league_win_ratio }}%</p>
-<p>Estimated Relative Player Skill for a {{ subject.league_and_division }} Player: <b>{{ subject.threat_rating }}</b></p>
+<p>Relative League Win Rate: <b>{{ subject.threat_rating }}</b></p>
 </div>
 <div class="contained-data-section section-image-background">
 <h3>Psychological Evaluation</h3>
@@ -122,8 +122,8 @@
     <p>Games Won: {{subject.current_champion_total_sessions_won}}</p>
     <p>Games Lost: {{subject.current_champion_total_sessions_lost}}</p>
     <p>Games Played: {{subject.current_champion_total_sessions_played}}</p>
-    <p>Champion Win Rate: {{subject.current_champion_career_win_percentage}}%</p>
     <p>Total Kills with this Champion: {{subject.current_champion_total_champions_killed}}</p>
+    <p>Champion Win Rate: {{subject.current_champion_career_win_percentage}}%</p>
     {% else %}
     <p>Champion has not previously been played in a ranked game.</p>
     <br>
@@ -153,7 +153,7 @@
           Team
         </th>
         <th>
-          Estimated Relative Player Skill
+          Relative League Win Rate
         </th>
         <th>
           Projected Psychology
@@ -200,9 +200,9 @@
       <h4>Average Champion Win Rates</h4>
       <p>Team 1: {{current_game.team1_average_champion_winrate}}%
       <p>Team 2: {{current_game.team2_average_champion_winrate}}%
-      <p>Most Skilled Team: <b>{{current_game.higher_skill_team}}</b></p>
+      <p>Most Champion-Proficient Team: <b>{{current_game.higher_skill_team}}</b></p>
       {% if not current_game.equal_skill %}
-        <p>Champion Skill Advantage: <b>{{current_game.skill_difference}}%</b></p>
+        <p>Champion Win Rate Advantage: <b>{{current_game.skill_difference}}%</b></p>
       {% endif %}
       </div>
       <div id="analysis-block-morale">
@@ -219,7 +219,7 @@
       <h4>Projected Outcome</h4>
       <p>Favoured Team to Win: <b>{{current_game.predicted_outcome}}</b></p>
       {% if not current_game.inconclusive %}
-        <p>Estimated Tactical Advantage: <b>{{current_game.total_advantage_difference}}%</b></p>
+        <p>Estimated Total Advantage: <b>{{current_game.total_advantage_difference}}%</b></p>
         <p>Estimated Chance to Win: <b>{{current_game.certainty}}%</b></p>
       {% else %}
       {% endif %}
@@ -231,9 +231,9 @@
       <h4>Average Threat Rating</h4>
       <p>Team 1: {{current_game.team1_average_threat}}%
       <p>Team 2: {{current_game.team2_average_threat}}%
-      <p>Most Skilled Team: <b>{{current_game.higher_threat_team}}</b></p>
+      <p>Team with Highest League Win Rate: <b>{{current_game.higher_threat_team}}</b></p>
       {% if not current_game.equal_threat %}
-        <p>Overall Player Skill Advantage: <b>{{current_game.threat_difference}}%</b></p>
+        <p>League Win Rate Advantage: <b>{{current_game.threat_difference}}%</b></p>
       {% endif %}
       </div>
     </div>
