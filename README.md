@@ -26,4 +26,9 @@ The Overseer database object is updated to reflect the new data regarding succes
 * ./manage.py migrate
 * ./manage.py runserver
 
-Add RIOT_API_KEY to mysite/local_settings.py
+# Starting Celery (in a new terminal instance)
+* . bin/activate
+* celery -A mysite worker -l info
+
+# Setting the API Key
+Add RIOT_API_KEY = (key) to mysite/local_settings.py

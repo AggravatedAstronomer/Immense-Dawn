@@ -77,6 +77,7 @@ $(document).ready(function() {
         opacity:1
         },200);
         $('.summoner-recent-accordion').accordion({collapsible: true, active: false});
+    $('.subject-accordion').accordion({collapsible: true, active: true});
     $('#ranked-game-summoners-list-header').delay(2250).animate({
         opacity:1
         },200);

@@ -48,7 +48,7 @@ class SharedPsychFunctions(object):
     def psych_core(self):
         print("PSYCHO-ANALYSING: ", self.name.upper())
         if len(self.history['matches']) < self.psych_war_mod.games_to_fetch:
-            self.games_to_fetch = len(self.history['matches'])
+            self.games_to_fetch = len(self.history.get('matches'))
             self.match_history_debug_message = (
                 "Limited history data. \
                         Number of requested games \
@@ -56,21 +56,17 @@ class SharedPsychFunctions(object):
             )
 
         for i in range(0, self.games_to_fetch):
-            root = self.history['matches'][i]
-            if root['queue'] == 'RANKED_SOLO_5x5':
-                match_id = root['matchId']
+            root = self.history.get('matches')[i]
+            if root.get('queue') == 'RANKED_SOLO_5x5':
+                match_id = root.get('matchId')
                 match = RiotAPI(self.api).get_match_by_id(match_id)
                 time.sleep(1)
                 if match:
-                    if len(match['participantIdentities']) != 10:
-                        print('DEBUG')
-                        print(root['queue'])
-                        print(len(match['participantIdentities']))
-                    for participant in match['participantIdentities']:
-                        print("Participant" + "\n")
-                        print(participant)
+                    if len(match.get('participantIdentities')) != 10:
+                        print("NON-10 NUMBER OF PARTICIPANTS")
+                    for participant in match.get('participantIdentities'):
                         if participant['player']['summonerId'] == self.riot_id:
-                            self.participant_id = participant['participantId'] - 1
+                            self.participant_id = participant.get('participantId') - 1
                     if match['participants'][self.participant_id]['stats']['winner'] is True:
                         self.match_history.append("Win")
                         self.recent_wins += 1
@@ -174,7 +170,7 @@ class SharedThreatFunctions(object):
 class RiotAPI(object):
     def __init__(self, api_key):
         self.api_key = api_key
-        self.region = settings.RIOT_REGIONS['europe_west']
+        self.region = settings.RIOT_REGIONS.get('europe_west')
 
     def _request(self, api_url, params={}):
         args = {'api_key': self.api_key}
@@ -183,7 +179,7 @@ class RiotAPI(object):
                 args[key] = value
 
         response = requests.get(
-            settings.RIOT_URL['base'].format(
+            settings.RIOT_URL.get('base').format(
                 proxy=self.region,
                 region=self.region,
                 url=api_url
@@ -197,31 +193,31 @@ class RiotAPI(object):
         return response.json()
 
     def get_summoner_by_name(self, name):
-        api_url = settings.RIOT_URL['summoner_by_name'].format(
-            version=settings.RIOT_API_VERSIONS['summoner'],
+        api_url = settings.RIOT_URL.get('summoner_by_name').format(
+            version=settings.RIOT_API_VERSIONS.get('summoner'),
             names=name
             )
         return self._request(api_url)
 
     def get_stats_by_id(self, riot_id):
-        api_url = settings.RIOT_URL['stats_by_id'].format(
-            version=settings.RIOT_API_VERSIONS['stats'],
+        api_url = settings.RIOT_URL.get('stats_by_id').format(
+            version=settings.RIOT_API_VERSIONS.get('stats'),
             summoner_id=riot_id,
             year=datetime.date.today().year
             )
         return self._request(api_url)
 
     def get_league_by_id(self, riot_id):
-        api_url = settings.RIOT_URL['league_by_id'].format(
-            version=settings.RIOT_API_VERSIONS['league'],
+        api_url = settings.RIOT_URL.get('league_by_id').format(
+            version=settings.RIOT_API_VERSIONS.get('league'),
             summoner_id=riot_id
             )
         return self._request(api_url)
 
     def get_history_by_id(self, riot_id, psych_war_mod):
         gamesToFetch = psych_war_mod.games_to_fetch
-        api_url = settings.RIOT_URL['match_history_by_id'].format(
-            version=settings.RIOT_API_VERSIONS['match_history'],
+        api_url = settings.RIOT_URL.get('match_history_by_id').format(
+            version=settings.RIOT_API_VERSIONS.get('match_history'),
             summoner_id=riot_id,
             begin=0,
             end=gamesToFetch
@@ -230,7 +226,7 @@ class RiotAPI(object):
 
     def get_match_by_id(self, match_id):
         api_url = settings.RIOT_URL['match_by_id'].format(
-            version=settings.RIOT_API_VERSIONS['match'],
+            version=settings.RIOT_API_VERSIONS.get('match'),
             match_id=match_id
             )
         return self._request(api_url)
@@ -243,7 +239,7 @@ class RiotAPI(object):
                 args[key] = value
 
         response = requests.get(
-            settings.RIOT_URL['current_game_by_id'].format(
+            settings.RIOT_URL.get('current_game_by_id').format(
                 region=self.region,
                 platformId="EUW1",
                 summoner_id=riot_id
@@ -264,7 +260,7 @@ class RiotAPI(object):
                 args[key] = value
 
         response = requests.get(
-            settings.RIOT_URL['featured_games'].format(
+            settings.RIOT_URL.get('featured_games').format(
                 region=self.region
                 ),
             params=args
@@ -282,9 +278,9 @@ class RiotAPI(object):
                 args[key] = value
 
         response = requests.get(
-            settings.RIOT_URL['version_by_region'].format(
+            settings.RIOT_URL.get('version_by_region').format(
                 region=self.region,
-                version=settings.RIOT_API_VERSIONS['static_data']
+                version=settings.RIOT_API_VERSIONS.get('static_data')
                 ),
             params=args
             )
@@ -301,9 +297,9 @@ class RiotAPI(object):
                 args[key] = value
 
         response = requests.get(
-            settings.RIOT_URL['champion_list'].format(
+            settings.RIOT_URL.get('champion_list').format(
                 region=self.region,
-                version=settings.RIOT_API_VERSIONS['static_data'],
+                version=settings.RIOT_API_VERSIONS.get('static_data')
                 ),
             params=args
             )
@@ -372,9 +368,9 @@ class IndexListScanner(object):
         self.game_state = \
             RiotAPI(self.api).get_current_game_by_id(self.riot_id)
         if self.game_state:
-            if self.game_state['gameType'] == 'MATCHED_GAME':
-                if self.game_state['gameQueueConfigId'] == 4:
-                    self.game_id = self.game_state['gameId']
+            if self.game_state.get('gameType') == 'MATCHED_GAME':
+                if self.game_state.get('gameQueueConfigId') == 4:
+                    self.game_id = self.game_state.get('gameId')
                     return True
 
 
@@ -450,30 +446,30 @@ class SubjectSummoner(object):
         """
         Retrieves the ranked stats of the player from the stats api
         """
-        for key in self.ranked_data['champions']:
+        for key in self.ranked_data.get('champions'):
             if key['id'] == 0:
-                root = key['stats']
-                self.total_doubles = root['totalDoubleKills']
-                self.total_triples = root['totalTripleKills']
-                self.total_quadras = root['totalQuadraKills']
-                self.total_pentas = root['totalPentaKills']
-                self.largest_killing_spree = root['maxLargestKillingSpree']
-                self.max_champions_killed = root['mostChampionKillsPerSession']
-                self.total_turrets_killed = root['totalTurretsKilled']
-                self.total_sessions_won = root['totalSessionsWon']
-                self.total_sessions_lost = root['totalSessionsLost']
-                self.total_games = root['totalSessionsPlayed']
+                root = key.get('stats')
+                self.total_doubles = root.get('totalDoubleKills')
+                self.total_triples = root.get('totalTripleKills')
+                self.total_quadras = root.get('totalQuadraKills')
+                self.total_pentas = root.get('totalPentaKills')
+                self.largest_killing_spree = root.get('maxLargestKillingSpree')
+                self.max_champions_killed = root.get('mostChampionKillsPerSession')
+                self.total_turrets_killed = root.get('totalTurretsKilled')
+                self.total_sessions_won = root.get('totalSessionsWon')
+                self.total_sessions_lost = root.get('totalSessionsLost')
+                self.total_games = root.get('totalSessionsPlayed')
                 self.career_win_rate = (
                     round((self.total_sessions_won / self.total_games)
                           * 100, 2)
                 )
-                self.total_champions_killed = root['totalChampionKills']
+                self.total_champions_killed = root.get('totalChampionKills')
 
     def retrieve_league_stats(self):
         """
         Retrieves league and division stats from the api
         """
-        self.league_win_ratio = False
+        self.league_win_ratio = None
         cfg = self.threat_config
         for key in self.league_data:
             if self.league_data[key][0]['queue'] != 'RANKED_SOLO_5x5':
@@ -483,21 +479,36 @@ class SubjectSummoner(object):
             self.queue_type = "Ranked 5v5"
             self.league_and_division = self.tier + " " + entries[0]['division']
             self.ladder_points = entries[0]['leaguePoints']
-            self.hot_streak = entries[0]['isHotStreak']
-            self.veteran_status = entries[0]['isVeteran']
+            self.fresh_blood_str = entries[0]['isFreshBlood']
+            if self.fresh_blood_str == 'true':
+                self.fresh_blood = 'This summoner is blood in this tier'
+            else:
+                self.fresh_blood = 'Negative'
+            self.hot_streak_str = str(entries[0]['isHotStreak'])
+            if self.hot_streak_str == 'true':
+                self.hot_streak = 'Summoner is on a hot streak'
+            else:
+                self.hot_streak = 'Negative'
+            self.veteran_status_str = str(entries[0]['isVeteran'])
+            if self.veteran_status_str == 'true':
+                self.veteran_status = 'Summoner is a veteran of this tier'
+            else:
+                self.veteran_status = 'Summoner is not a veteran'
             self.league_wins = entries[0]['wins']
             self.league_losses = entries[0]['losses']
+            self.league_games = self.league_wins + self.league_losses
             self.league_win_ratio = (
                 round((self.league_wins / (self.league_wins +
                                            self.league_losses))*100, 2)
             )
-        if self.league_win_ratio is not False:
+        if self.league_win_ratio is not None:
             threat_assessment = SharedThreatFunctions(
                 self.league_win_ratio,
                 cfg,
             )
             self.threat_rating = threat_assessment.rating
         else:
+            self.league_win_ratio = 50
             self.threat_rating = "No league data exists yet"
 
     def retrieve_match_history(self):
@@ -528,17 +539,17 @@ class SubjectSummoner(object):
     def retrieve_most_played_champion(self):
         champions_played = {}
         self.champ_master_list
-        for key in self.ranked_data['champions']:
+        for key in self.ranked_data.get('champions'):
             if key['id'] == 0:
                 continue
             games_played = key['stats']['totalSessionsPlayed']
-            champion_id = key['id']
+            champion_id = key.get('id')
             champions_played[champion_id] = games_played
         most_games = max(champions_played.values())
-        for key in self.ranked_data['champions']:
+        for key in self.ranked_data.get('champions'):
             if key['stats']['totalSessionsPlayed'] != most_games:
                 continue
-            most_played_champion_id = key['id']
+            most_played_champion_id = key.get('id')
         self.most_played_champion_name = \
             self.champ_master_list[str(most_played_champion_id)]['name']
         self.most_played_champion_title = \
@@ -547,36 +558,36 @@ class SubjectSummoner(object):
         self.most_played_champion_url_splash = images.splash
         self.most_played_champion_url = images.loading
         self.most_played_champion_square_url = images.square
-        for key in self.ranked_data['champions']:
+        for key in self.ranked_data.get('champions'):
             if key['id'] != most_played_champion_id:
                 continue
-            root = key['stats']
-            self.main_doubles = root['totalDoubleKills']
-            self.main_triples = root['totalTripleKills']
-            self.main_quadras = root['totalQuadraKills']
-            self.main_pentas = root['totalPentaKills']
+            root = key.get('stats')
+            self.main_doubles = root.get('totalDoubleKills')
+            self.main_triples = root.get('totalTripleKills')
+            self.main_quadras = root.get('totalQuadraKills')
+            self.main_pentas = root.get('totalPentaKills')
             self.main_most_champions_killed = (
-                root['mostChampionKillsPerSession'])
-            self.main_turrets_killed = root['totalTurretsKilled']
-            self.main_sessions_won = root['totalSessionsWon']
-            self.main_sessions_lost = root['totalSessionsLost']
-            self.main_sessions_played = root['totalSessionsPlayed']
+                root.get('mostChampionKillsPerSession'))
+            self.main_turrets_killed = root.get('totalTurretsKilled')
+            self.main_sessions_won = root.get('totalSessionsWon')
+            self.main_sessions_lost = root.get('totalSessionsLost')
+            self.main_sessions_played = root.get('totalSessionsPlayed')
             self.main_win_percentage = (
                 round((self.main_sessions_won / self.main_sessions_played)
                       * 100, 2)
             )
-            self.main_champions_killed = root['totalChampionKills']
+            self.main_champions_killed = root.get('totalChampionKills')
 
     def retrieve_champion_being_played(self):
         """
         Retrieves the player's stats with the currently played champion
         """
         game = self.current_game.game_data
-        participants = game['participants']
+        participants = game.get('participants')
         for participant in participants:
             if participant['summonerName'] != self.display_name:
                 continue
-            self.current_champion_id = participant['championId']
+            self.current_champion_id = participant.get('championId')
             self.current_champion_name = \
                 self.champ_master_list[str(self.current_champion_id)]['name']
             self.current_champion_title = \
@@ -589,31 +600,31 @@ class SubjectSummoner(object):
             return
         for key in self.ranked_data['champions']:
             if key['id'] == self.current_champion_id:
-                root = key['stats']
+                root = key.get('stats')
                 self.current_champion_doubles = (
-                    root['totalDoubleKills'])
+                    root.get('totalDoubleKills'))
                 self.current_champion_triples = (
-                    root['totalTripleKills'])
+                    root.get('totalTripleKills'))
                 self.current_champion_quadras = (
-                    root['totalQuadraKills'])
+                    root.get('totalQuadraKills'))
                 self.current_champion_pentas = (
-                    root['totalPentaKills'])
+                    root.get('totalPentaKills'))
                 self.current_champion_max_kills = (
-                    root['mostChampionKillsPerSession'])
+                    root.get('mostChampionKillsPerSession'))
                 self.current_champion_total_turrets_killed = (
-                    root['totalTurretsKilled'])
+                    root.get('totalTurretsKilled'))
                 self.current_champion_total_sessions_won = (
-                    root['totalSessionsWon'])
+                    root.get('totalSessionsWon'))
                 self.current_champion_total_sessions_lost = (
-                    root['totalSessionsLost'])
+                    root.get('totalSessionsLost'))
                 self.current_champion_total_sessions_played = (
-                    root['totalSessionsPlayed'])
+                    root.get('totalSessionsPlayed'))
                 x = self.current_champion_total_sessions_won
                 y = self.current_champion_total_sessions_played
                 self.current_champion_career_win_percentage = (
                     round((x / y) * 100, 2))
                 self.current_champion_total_champions_killed = (
-                    root['totalChampionKills'])
+                    root.get('totalChampionKills'))
 
 
 class Game(object):
@@ -638,9 +649,9 @@ class Game(object):
         )
 
         if self.game_data:
-            self.game_id = self.game_data['gameId']
+            self.game_id = self.game_data.get('gameId')
             self.populate_participants()
-            if self.game_data['gameQueueConfigId'] == 4:
+            if self.game_data.get('gameQueueConfigId') == 4:
                 self.display_table = True
                 self.predict_outcome()
 
@@ -651,7 +662,7 @@ class Game(object):
         # Unlike the Match History and Stats api requests, the league
         # api request supports a list of 10 IDs, so we use this to save
         # 9 api requests
-        for i in range(0, len(self.game_data['participants'])):
+        for i in range(0, len(self.game_data.get('participants'))):
             self.participant_ids.append(
                 self.game_data['participants'][i]['summonerId']
             )
@@ -663,10 +674,10 @@ class Game(object):
         time.sleep(1)
         participant_number = 0
 
-        for participant_data in self.game_data['participants']:
+        for participant_data in self.game_data.get('participants'):
             participant_number += 1
             images = \
-                self.image_handler.get_champ(participant_data['championId'])
+                self.image_handler.get_champ(participant_data.get('championId'))
             participant_data['splash_url'] = images.splash
             participant_data['loading_url'] = images.loading
             participant_data['square_url'] = images.square
@@ -686,7 +697,7 @@ class Game(object):
         Retrieves the game type from the current game api
         """
         if self.game_data:
-            if self.game_data['gameQueueConfigId'] == 4:
+            if self.game_data.get('gameQueueConfigId') == 4:
                 return "In a Ranked 5v5 Game"
             else:
                 return "In a Non-Ranked Game"
@@ -703,7 +714,7 @@ class Game(object):
         provides an estimate for the associated probability.
         """
 
-        if self.game_data['gameQueueConfigId'] != 4:
+        if self.game_data.get('gameQueueConfigId') != 4:
             return None
         self.certainty = None
         for i in range(0, 2):
@@ -874,19 +885,19 @@ class Participant(object):
         self.game = game
         self.psych_war_mod = psych_war_mod
         self.threat_config = threat_config
-        self.summoner_name = data['summonerName']
-        self.riot_id = data['summonerId']
-        self.team = str((data['teamId']))[:1]
+        self.summoner_name = data.get('summonerName')
+        self.riot_id = data.get('summonerId')
+        self.team = str((data.get('teamId')))[:1]
         self.number = participant_number
         if self.number == 1:
             self.first_participant = True
         if self.number == 5:
             self.divider_participant = True
-        self.champion_id = self.data['championId']
+        self.champion_id = self.data.get('championId')
 
         self.champion_name = champ_master_list[str(self.champion_id)]['name']
         self.champion_title = champ_master_list[str(self.champion_id)]['title']
-        self.icon_url = self.data['square_url']
+        self.icon_url = self.data.get('square_url')
         wiki_url = "http://leagueoflegends.wikia.com/wiki/{champ}"
         self.wiki_url = wiki_url.format(champ=self.champion_name)
         self.win_rate_obtained = False
@@ -895,7 +906,7 @@ class Participant(object):
         self.league = {}
         for key in self.league_data_all_players:
             league_root = self.league_data_all_players[key][0]
-            if league_root['queue'] == "RANKED_SOLO_5x5":
+            if league_root.get('queue') == "RANKED_SOLO_5x5":
                 name = league_root['entries'][0]['playerOrTeamName']
                 if name == self.summoner_name:
                     self.league = league_root
@@ -911,24 +922,28 @@ class Participant(object):
     def retrieve_champion_win_rate(self):
         print("Harvesting API data for " + self.summoner_name)
         if self.stats is not None:
-            for key in self.stats['champions']:
-                if key['id'] == self.champion_id:
-                    stats = key['stats']
-                    self.champion_wins = stats['totalSessionsWon']
-                    self.champion_games = stats['totalSessionsPlayed']
+            self.champion_games = 0
+            for key in self.stats.get('champions'):
+                if key.get('id') == self.champion_id:
+                    stats = key.get('stats')
+                    self.champion_wins = stats.get('totalSessionsWon')
+                    self.champion_games = stats.get('totalSessionsPlayed')
                     self.champion_win_rate = int(
                         round((self.champion_wins / self.champion_games)
                               * 100, 0)
                     )
-                    self.win_rate_obtained = True
+            if self.champion_games >= 3:
+                self.win_rate_obtained = True
+            else:
+                self.champion_win_rate = "Insufficient ranked games ({0}) for meaningful measurement".format(self.champion_games)
             if not self.win_rate_obtained:
-                self.champion_win_rate = "Champion not played in ranked"
+                self.champion_win_rate = "Insufficient ranked games ({0}) for meaningful measurement".format(self.champion_games)
         else:
             self.champion_win_rate = "Failure to retrieve ranked stats"
 
     def threat(self):
         if self.league != {}:
-            self.league_data = self.league['entries']
+            self.league_data = self.league.get('entries')
             wins = self.league_data[0]['wins']
             losses = self.league_data[0]['losses']
             if wins + losses > 0:
@@ -940,7 +955,7 @@ class Participant(object):
                 self.threat_config
             )
             self.threat_rating = threat_assessment.rating
-            tier = self.league['tier']
+            tier = self.league.get('tier')
             division = self.league_data[0]['division']
             self.league_and_division = tier + " " + division
         else:

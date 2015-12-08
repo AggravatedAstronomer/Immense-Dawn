@@ -2,7 +2,8 @@
 {% load staticfiles %}
 <body>
 {% block content %}
-<h1>This is the Detail View for {{ summoner.name }}</h1>
+<h1 id="main-header">Immense Dawn</h1>
+<h1> Subject '{{ summoner.name }}' Analysis</h1>
 <div class="contained-data-section">
   <h3>Core Summoner Properties:</h3>
   <p>Summoner Name: {{subject.display_name }}</p>
@@ -15,9 +16,10 @@
   <p class="glyphicon glyphicon-eye-open analysis-preset-text" style="display: inline"> Psychological Warfare Module: <b>{{ psych_war_mod.preset_name }}</b></p>
 </div>
 <br>
-<div class="contained-data-section section-image-background">
-<h3>Main Champion Statistics:</h3>
+<div class="subject-accordion section-image-background">
+<h3>Main Champion Statistics</h3>
   {% if subject.most_played_champion_name %}
+  <div class="contained-entry-main">
   <p>Most Played Champion: <b>{{subject.most_played_champion_name }}, {{ subject.most_played_champion_title }}</b></p>
   <p>Double Kills: {{ subject.main_doubles }}</p>
   <p>Triple Kills: {{ subject.main_triples }}</p>
@@ -31,12 +33,14 @@
   <p>Win Rate: {{ subject.main_win_percentage }}%</p>
   <p>Total Kills: {{ subject.main_champions_killed }}</p>
   <img src="{{ subject.most_played_champion_url_splash }}" />
+  </div>
   {% else %}
   <p>Ranked champion data unavailable</p>
   {% endif %}
 </div>
-<div class="contained-data-section">
-  <h3>Overall Ranked Statistics:</h3>
+<div class="subject-accordion section-image-background">
+  <h3>Overall Ranked Statistics</h3>
+  <div class="contained-entry-main">
   <p>Double Kills: {{ subject.total_doubles }}</p>
   <p>Triple Kills: {{ subject.total_triples }}</p>
   <p>Quadra Kills: {{ subject.total_quadras }}</p>
@@ -49,22 +53,28 @@
   <p>Games Lost: {{ subject.total_sessions_lost }}</p>
   <p>Games Played: {{ subject.total_games }}</p>
   <p>Lifetime Win Percentage: {{ subject.career_win_rate }}%</p>
+  </div>
 </div>
 <br>
-<div class="contained-data-section">
-<h3>League Statistics</h3>
+<div class="subject-accordion section-image-background">
+<h3>Tier Statistics</h3>
+<div class="contained-entry-main">
 <p>Queue Type: {{ subject.queue_type }}</p>
-<p>League and Division: {{ subject.league_and_division }}</p>
+<p>Tier and Division: {{ subject.league_and_division }}</p>
 <p>Ladder Points: {{ subject.ladder_points }}
+<p>Fresh Blood: {{ subject.fresh_blood }}
 <p>Hot Streak: {{ subject.hot_streak }}</p>
 <p>Veteran: {{ subject.veteran_status }}</p>
-<p>Wins in this League: {{ subject.league_wins }}</p>
-<p>Losses in this League: {{ subject.league_losses }}</p>
-<p>Win Ratio in this League: {{ subject.league_win_ratio }}%</p>
-<p>Relative League Win Rate: <b>{{ subject.threat_rating }}</b></p>
+<p>Wins in this Tier: {{ subject.league_wins }}</p>
+<p>Losses in this Tier: {{ subject.league_losses }}</p>
+<p>Total games in this Tier: {{ subject.league_games }}</p>
+<p>Win Ratio in this Tier: {{ subject.league_win_ratio }}%</p>
+<p>Relative Tier Win Rate: <b>{{ subject.threat_rating }}</b></p>
 </div>
-<div class="contained-data-section section-image-background">
+</div>
+<div class="subject-accordion section-image-background">
 <h3>Psychological Evaluation</h3>
+<div class="contained-entry-main">
 {% if subject.match_history %}
 <div class="match-table psych-eval-container">
 <img id="psych-image" src="{% static "StatTracker/PsychArt.jpg" %}" />
@@ -104,9 +114,11 @@
 {% endif %}
 </div>
 </div>
+</div>
 
-<div class="contained-data-section section-image-background">
-  <h3>Current Game</h3>
+<div class="subject-accordion section-image-background">
+  <h3>Current Champion Stats</h3>
+  <div class="contained-entry-main">
   <p>Status: <b>{{ current_game.game_type }}</b></p>
     {% if current_game.game_data %}
     <p>Playing as: <b>{{ subject.current_champion_name }}, {{ subject.current_champion_title }}</b></p>
@@ -131,6 +143,7 @@
     <br>
     {% endif %}
     {% endif %}
+    </div>
 </div>
 <br>
 {% if current_game.display_table %}
@@ -177,7 +190,7 @@
       </tr>
       <tr>
         <td>{{participant.riot_id}}</td>
-        <td>Win Rate: <b>{{participant.champion_win_rate}}</b>{% if participant.win_rate_obtained %}% of <b>{{ participant.champion_games }}</b> ranked games{% endif %}</td>
+        <td>Win Rate with {{ participant.champion_name }}: <b>{{participant.champion_win_rate}}</b>{% if participant.win_rate_obtained %}% of <b>{{ participant.champion_games }}</b> ranked games{% endif %}</td>
         <td>Severity: <b>{{participant.severity}}</b></td>
       </tr>
       {% if participant.divider_participant %}
@@ -241,12 +254,13 @@
 <br>
 <br>
 <form method="GET" action="{% url 'StatTracker:index' %}">
-<button class="btn-info">Return to Index</button>
+<button class="btn-info">Return</button><br>
 </form>
 <br>
 <br>
-<div class="footer-div-absolute">
-  <p class="non-highlighting">Immense Dawn isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</p>
+<br>
+<div class="footer-div-fixed">
+    <p class="non-highlighting">Immense Dawn isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc.</p>
 </div>
 {% endblock %}
 </body>

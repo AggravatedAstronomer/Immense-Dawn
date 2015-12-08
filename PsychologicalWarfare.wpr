@@ -26,6 +26,12 @@ proj.directory-list = [{'dirloc': loc('.'),
                         'include_hidden': False,
                         'recursive': True,
                         'watch_for_changes': True}]
+proj.file-list = [loc('../../Downloads/bootstrap/bootstrap-3.3.5-dist/fonts/glyphicons-halflings-regular.eot'),
+                  loc('../../Downloads/bootstrap/bootstrap-3.3.5-dist/fonts/glyphicons-halflings-regular.svg'),
+                  loc('../../Downloads/bootstrap/bootstrap-3.3.5-dist/fonts/glyphicons-halflings-regular.ttf'),
+                  loc('../../Downloads/bootstrap/bootstrap-3.3.5-dist/fonts/glyphicons-halflings-regular.woff'),
+                  loc('../../Downloads/bootstrap/bootstrap-3.3.5-dist/fonts/glyphicons-halflings-regular.woff2'),
+                  loc('StatTracker/static/StatTracker/fonts/glyphicons-halflings-regular.eot')]
 proj.file-type = 'shared'
 proj.launch-config = {loc('manage.py'): ('custom',
         (u'',
